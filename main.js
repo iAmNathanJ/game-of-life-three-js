@@ -8,8 +8,12 @@ const settings = {
     color: 0xff66ff,
     opacity: 0.3
   },
-  zoom: 500,
-  refreshRate: 100
+  zoom: 300,
+  refreshRate: 100,
+
+  liveRangeLow: 2,
+  liveRangeHigh: 3,
+  birthNum: 3
 };
 
 function main() {
@@ -18,7 +22,7 @@ function main() {
 
   // SETUP ================================================
 
-  let scene, renderer, camera, lights, outerCube, cube, life, cells = [];
+  let scene, renderer, camera, lights, outerCube, cube, life, running = false, cells = [];
 
   const MIN   = Math.min;
   const MAX   = Math.max;
@@ -35,7 +39,11 @@ function main() {
     ctrlCellSize: select('#ctrl-cell-size'),
     ctrlCellSpacing: select('#ctrl-cell-spacing'),
     ctrlZoom: select('#ctrl-zoom'),
-    ctrlSpeed: select('#ctrl-speed')
+    ctrlSpeed: select('#ctrl-speed'),
+    ctrlLiveRangeLow: select('#ctrl-live-range-low'),
+    ctrlLiveRangeHigh: select('#ctrl-live-range-high'),
+    ctrlBirthNum: select('#ctrl-birth-num'),
+    ctrlGo: select('#ctrl-go')
   };
 
   const measure = {
@@ -85,6 +93,10 @@ function main() {
       DOM.ctrlCellSpacing.addEventListener('input', updateCubeSpacing);
       DOM.ctrlZoom.addEventListener('input', updateZoom);
       DOM.ctrlSpeed.addEventListener('input', updateRefreshRate);
+      DOM.ctrlLiveRangeLow.addEventListener('input', updateRules);
+      DOM.ctrlLiveRangeHigh.addEventListener('input', updateRules);
+      DOM.ctrlBirthNum.addEventListener('input', updateRules);
+      DOM.ctrlGo.addEventListener('click', go);
     }
   };
 
@@ -119,10 +131,9 @@ function main() {
     setup.controls();
     setup.listeners();
 
-    life = $_life();
+    life = $_life(settings.liveRangeLow, settings.liveRangeHigh, settings.birthNum);
     life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
     constructWorld(settings.cubeSize, settings.cubeSpacing);
-    go();
   }
 
   init();
@@ -138,7 +149,6 @@ function main() {
   };
 
   function play() {
-    // DO work
     render();
     requestAnimationFrame(play);
   }
@@ -162,6 +172,23 @@ function main() {
     outerCube.rotation.y = rotationX * strength;
     outerCube.rotation.x = rotationY * strength;
     render();
+  }
+
+  function updateRules(event) {
+    switch (event.target.name) {
+      case 'live-range-low':
+        settings.liveRangeLow = event.target.value;
+        life.setLiveRangeLow(settings.liveRangeLow);
+        break;
+      case 'live-range-high':
+        settings.liveRangeHigh = event.target.value;
+        life.setLiveRangeHigh(settings.liveRangeHigh);
+        break;
+      case 'birth-num':
+        settings.birthNum = event.target.value;
+        life.setBirthNum(settings.birthNum);
+        break;
+    }
   }
 
   function updateWorldSize(event) {
@@ -190,11 +217,14 @@ function main() {
 
   function go() {
 
+    let liveCells = 0;
+
     for(var i = 0, length = cells.length; i < length; i++) {
       for(var j = 0; j < length; j++) {
         for(var k = 0; k < length; k++) {
           if(life.state[i][j][k]) {
             cells[i][j][k].material = material.solid;
+            liveCells += 1;
           } else {
             cells[i][j][k].material = material.transparent;
           }
@@ -205,9 +235,9 @@ function main() {
     life.generate();
     render();
 
-    setTimeout(function() {
-      go();
-    }, settings.refreshRate);
+    if(liveCells) {
+      setTimeout(go, settings.refreshRate);
+    }
 
   }
 
