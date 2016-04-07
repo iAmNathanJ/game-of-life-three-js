@@ -71,8 +71,8 @@ function main() {
       ];
 
       lights[0].position.set(150, -150, 150);
-      lights[1].position.set(-150, 0, -150);
-      lights[2].position.set(0, 150, 0);
+      lights[1].position.set(-150, 0, 150);
+      lights[2].position.set(0, 150, 150);
 
       lights.forEach(light => {
         scene.add(light);
@@ -82,7 +82,7 @@ function main() {
       DOM.ctrlCellCount.value = settings.worldSize;
       DOM.ctrlCellSize.value = settings.cubeSize;
       DOM.ctrlCellSpacing.value = settings.cubeSpacing;
-      DOM.ctrlZoom.value = settings.zoom;
+      DOM.ctrlZoom.value = -settings.zoom;
       DOM.ctrlSpeed.value = settings.refreshRate;
     },
     listeners() {
