@@ -252,9 +252,10 @@ function main() {
   }
 }
 
-// UTILITY ================================================
-
 document.addEventListener('DOMContentLoaded', main);
+
+
+// UTILITY ================================================
 
 function debounce(fn, wait) {
   var timer;
