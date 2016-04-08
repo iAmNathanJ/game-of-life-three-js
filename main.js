@@ -8,7 +8,7 @@ const settings = {
     color: 0xff66ff,
     opacity: 0.3
   },
-  zoom: 300,
+  zoom: 400,
   refreshRate: 100,
 
   liveRangeLow: 2,
@@ -35,6 +35,8 @@ function main() {
   const DOM = {
     main: select('.main'),
     header: select('.main-header'),
+    controls: select('.controls'),
+    controlsToggle: select('.controls-toggle'),
     ctrlCellCount: select('#ctrl-cell-count'),
     ctrlCellSize: select('#ctrl-cell-size'),
     ctrlCellSpacing: select('#ctrl-cell-spacing'),
@@ -84,10 +86,12 @@ function main() {
       DOM.ctrlCellSpacing.value = settings.cubeSpacing;
       DOM.ctrlZoom.value = -settings.zoom;
       DOM.ctrlSpeed.value = settings.refreshRate;
+
     },
     listeners() {
       window.addEventListener('resize', debounce(updateCamera, 150));
       window.addEventListener('mousemove', throttle(rotateScene, 50));
+      DOM.controlsToggle.addEventListener('click', toggleControls);
       DOM.ctrlCellCount.addEventListener('input', updateWorldSize);
       DOM.ctrlCellSize.addEventListener('input', updateCubeSize);
       DOM.ctrlCellSpacing.addEventListener('input', updateCubeSpacing);
@@ -172,6 +176,10 @@ function main() {
     outerCube.rotation.y = rotationX * strength;
     outerCube.rotation.x = rotationY * strength;
     render();
+  }
+
+  function toggleControls() {
+    DOM.controls.classList.toggle('open');
   }
 
   function updateRules(event) {
