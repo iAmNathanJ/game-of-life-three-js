@@ -34,8 +34,10 @@ body {
   left: 0;
   padding: 15px 0 18px;
   background: rgba(102, 51, 153, 0.5);
-  transform-origin: top left;
-  transform: rotateZ(-90deg) translateX(-100%);
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
+  -webkit-transform: rotateZ(-90deg) translateX(-100%);
+          transform: rotateZ(-90deg) translateX(-100%);
   font-size: 6vh;
   font-weight: 800;
   letter-spacing: -.05em;
@@ -53,8 +55,12 @@ body {
   background: rgba(102, 51, 153, 0.5);
   mix-blend-mode: screen;
   padding: 50px 20px 20px 110px;
-  transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+  -webkit-transition: -webkit-transform .2s ease-out;
+  transition: -webkit-transform .2s ease-out;
   transition: transform .2s ease-out;
+  transition: transform .2s ease-out, -webkit-transform .2s ease-out;
   will-change: transform; }
   .controls .controls-toggle {
     position: absolute;
@@ -68,16 +74,24 @@ body {
     font-size: 1em;
     color: white;
     cursor: pointer;
-    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+    -webkit-transition: -webkit-transform .2s ease-out;
+    transition: -webkit-transform .2s ease-out;
     transition: transform .2s ease-out;
+    transition: transform .2s ease-out, -webkit-transform .2s ease-out;
     will-change: transform; }
   .controls.open {
-    transform: translateX(0); }
+    -webkit-transform: translateX(0);
+            transform: translateX(0); }
     .controls.open .controls-toggle {
-      transform: translateX(0); }
+      -webkit-transform: translateX(0);
+              transform: translateX(0); }
 
 .slider {
-  appearance: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   outline: none;
   width: 250px;
   height: 4px;
@@ -89,13 +103,15 @@ body {
     border-color: transparent;
     color: transparent; }
   .slider::-webkit-slider-thumb {
-    appearance: none; }
+    -webkit-appearance: none;
+            appearance: none; }
   .slider::-webkit-slider-thumb {
     width: 16px;
     height: 16px;
     background: rebeccapurple;
     border: 1px solid black;
     border-radius: 50%;
+    cursor: -webkit-grab;
     cursor: grab; }
   .slider::-moz-range-thumb {
     width: 16px;
@@ -125,5 +141,3 @@ button {
 
 label {
   display: block; }
-
-/*# sourceMappingURL=main.css.map */
