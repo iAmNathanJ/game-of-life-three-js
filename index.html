@@ -10,40 +10,41 @@
     <main class="main">
       <header class="main-header">
         <h1 class="text-xl">Conway's Game of Life</h1>
-        <div class="controls">
-          <fieldset>
-            <label for="cell-count">Cell Count</label>
-            <input name="cell-count" id="ctrl-cell-count" type="range" min="5" max="25">
-          </fieldset>
-          <fieldset>
-            <label for="cell-size">Cell Size</label>
-            <input name="cell-size" id="ctrl-cell-size" type="range" min="1" max="5">
-          </fieldset>
-          <fieldset>
-            <label for="cell-spacing">Cell Spacing</label>
-            <input name="cell-spacing" id="ctrl-cell-spacing" type="range" min="0" max="10">
-          </fieldset>
-          <fieldset>
-            <label for="zoom">Zoom</label>
-            <input name="zoom" id="ctrl-zoom" type="range" min="-500" max="0">
-          </fieldset>
-          <fieldset>
-            <label for="speed">Speed</label>
-            <input name="speed" id="ctrl-speed" type="range" min="-2000" max="-20">
-          </fieldset>
-          <fieldset>
-            <label for="live-range-low">Live Range Low</label>
-            <input name="live-range-low" id="ctrl-live-range-low" type="number" min="1" max="26" value="2">
-            <label for="live-range-high">Live Range High</label>
-            <input name="live-range-high" id="ctrl-live-range-high" type="number" min="1" max="26" value="3">
-            <label for="birth-num">Birth Num</label>
-            <input name="birth-num" id="ctrl-birth-num" type="number" min="1" max="26" value="3">
-          </fieldset>
-          <fieldset>
-            <button id="ctrl-go">GO</button>
-          </fieldset>
-        </div>
       </header>
+      <div class="controls">
+        <button class="controls-toggle">menu</button>
+        <fieldset>
+          <label for="cell-count">Cell Count</label>
+          <input class="slider" name="cell-count" id="ctrl-cell-count" type="range" min="5" max="25">
+        </fieldset>
+        <fieldset>
+          <label for="cell-size">Cell Size</label>
+          <input class="slider" name="cell-size" id="ctrl-cell-size" type="range" min="1" max="5">
+        </fieldset>
+        <fieldset>
+          <label for="cell-spacing">Cell Spacing</label>
+          <input class="slider" name="cell-spacing" id="ctrl-cell-spacing" type="range" min="0" max="10">
+        </fieldset>
+        <fieldset>
+          <label for="zoom">Zoom</label>
+          <input class="slider" name="zoom" id="ctrl-zoom" type="range" min="-500" max="0">
+        </fieldset>
+        <fieldset>
+          <label for="speed">Speed</label>
+          <input class="slider" name="speed" id="ctrl-speed" type="range" min="-2000" max="-20">
+        </fieldset>
+        <fieldset>
+          <label for="live-range-low">Live Range Low</label>
+          <input name="live-range-low" id="ctrl-live-range-low" type="number" min="1" max="26" value="2">
+          <label for="live-range-high">Live Range High</label>
+          <input name="live-range-high" id="ctrl-live-range-high" type="number" min="1" max="26" value="3">
+          <label for="birth-num">Birth Num</label>
+          <input name="birth-num" id="ctrl-birth-num" type="number" min="1" max="26" value="3">
+        </fieldset>
+        <fieldset>
+          <button id="ctrl-go">GO</button>
+        </fieldset>
+      </div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r74/three.js"></script>
     <script src="life.js"></script>
