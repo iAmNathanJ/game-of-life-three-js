@@ -27,11 +27,12 @@ gulp.task('css', () => {
 });
 
 gulp.task('js', function() {
-  return gulp.src(['./js/src/life.js', './js/src/main.js'])
+  gulp.src(['./js/src/life.js', './js/src/main.js'])
     .pipe(babel({
       presets: ['es2015']
     }))
     .pipe(gulp.dest('./js'));
+  reload();
 });
 
 gulp.task('build', ['css', 'js']);
