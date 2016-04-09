@@ -8,7 +8,7 @@ const settings = {
     color: 0xff66ff,
     opacity: 0.3
   },
-  zoom: 400,
+  zoom: 500,
   refreshRate: 100,
 
   liveRangeLow: 2,
@@ -33,8 +33,9 @@ function main() {
   const select = (e) => document.querySelector(e);
 
   const DOM = {
+    body: select('body'),
     main: select('.main'),
-    header: select('.main-header'),
+    header: select('.main-header h1'),
     controls: select('.controls'),
     controlsToggle: select('.controls-toggle'),
     ctrlCellCount: select('#ctrl-cell-count'),
@@ -45,12 +46,13 @@ function main() {
     ctrlLiveRangeLow: select('#ctrl-live-range-low'),
     ctrlLiveRangeHigh: select('#ctrl-live-range-high'),
     ctrlBirthNum: select('#ctrl-birth-num'),
-    ctrlGo: select('#ctrl-go')
+    ctrlGo: select('#ctrl-go'),
+    ctrlReset: select('#ctrl-reset')
   };
 
   const measure = {
-    height() { return DOM.main.clientHeight - DOM.header.clientHeight; },
-    width() { return DOM.main.clientWidth; }
+    height() { return DOM.main.clientHeight; },
+    width() { return DOM.main.clientWidth + DOM.header.clientHeight; }
   };
 
   const setup = {
@@ -101,6 +103,7 @@ function main() {
       DOM.ctrlLiveRangeHigh.addEventListener('input', updateRules);
       DOM.ctrlBirthNum.addEventListener('input', updateRules);
       DOM.ctrlGo.addEventListener('click', go);
+      DOM.ctrlReset.addEventListener('click', reset);
     }
   };
 
@@ -136,7 +139,7 @@ function main() {
     setup.listeners();
 
     life = $_life(settings.liveRangeLow, settings.liveRangeHigh, settings.birthNum);
-    life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
+    life.seed(settings.worldSize, settings.worldSize, 1);
     constructWorld(settings.cubeSize, settings.cubeSpacing);
   }
 
@@ -160,7 +163,6 @@ function main() {
   // EVENT HANDLERS ================================================
 
   function updateCamera() {
-    camera.position.z = settings.zoom;
     camera.aspect = getAspect();
     camera.updateProjectionMatrix();
     renderer.setSize(measure.width(), measure.height());
@@ -245,13 +247,15 @@ function main() {
 
     if(liveCells) {
       setTimeout(go, settings.refreshRate);
+    } else {
+      reset();
     }
 
   }
 
   function constructWorld(cubeSize, cubeSpacing) {
 
-    let outerCubeSize = (settings.worldSize * settings.cubeSize) + (settings.worldSize * settings.cubeSpacing) ;
+    let outerCubeSize = (settings.worldSize * settings.cubeSize) + (settings.worldSize * settings.cubeSpacing);
     let outerBox = new THREE.BoxGeometry(outerCubeSize, outerCubeSize, outerCubeSize);
     let outerBoxMaterial = material.wireframe;
     outerCube = new THREE.Mesh(outerBox, outerBoxMaterial);
@@ -259,7 +263,7 @@ function main() {
 
     let box = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
 
-    var maxPosCoords = settings.worldSize / 2 - settings.cubeSpacing,
+    var maxPosCoords = settings.worldSize / 2,
         upper = (maxPosCoords * cubeSize) + (maxPosCoords * cubeSpacing) - settings.cubeSpacing,
         lower = -upper,
         i, j, k, x, y, z;
@@ -287,6 +291,12 @@ function main() {
     });
 
     render();
+  }
+
+  function reset() {
+    console.log(scene);
+    scene.children = [];
+    constructWorld();
   }
 }
 
