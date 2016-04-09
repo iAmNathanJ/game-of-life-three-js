@@ -255,7 +255,7 @@ function main() {
 
   function constructWorld(cubeSize, cubeSpacing) {
 
-    let outerCubeSize = (settings.worldSize * settings.cubeSize) + (settings.worldSize * settings.cubeSpacing);
+    let outerCubeSize = (settings.worldSize * cubeSize) + (settings.worldSize * cubeSpacing);
     let outerBox = new THREE.BoxGeometry(outerCubeSize, outerCubeSize, outerCubeSize);
     let outerBoxMaterial = material.wireframe;
     outerCube = new THREE.Mesh(outerBox, outerBoxMaterial);
@@ -264,7 +264,7 @@ function main() {
     let box = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
 
     var maxPosCoords = settings.worldSize / 2,
-        upper = (maxPosCoords * cubeSize) + (maxPosCoords * cubeSpacing) - settings.cubeSpacing,
+        upper = (maxPosCoords * cubeSize) + (maxPosCoords * cubeSpacing) - cubeSpacing,
         lower = -upper,
         i, j, k, x, y, z;
 
@@ -293,10 +293,18 @@ function main() {
     render();
   }
 
+  function clearScene() {
+    for (let i = scene.children.length-1; i >= 0 ; i--) {
+      let child = scene.children[i];
+      if(child instanceof THREE.Mesh) {
+        scene.remove(scene.children[i]);
+      }
+    }
+  }
+
   function reset() {
-    console.log(scene);
-    scene.children = [];
-    constructWorld();
+    clearScene();
+    constructWorld(settings.cubeSize, settings.cubeSpacing);
   }
 }
 
