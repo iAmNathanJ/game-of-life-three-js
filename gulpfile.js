@@ -18,7 +18,7 @@ const reload = () => {
 // T A S K S ========================
 
 gulp.task('css', () => {
-  gulp.src('./scss/main.scss')
+  gulp.src('./src/scss/main.scss')
     .pipe(sass()
       .on('error', sass.logError))
     .pipe(autoprefixer())
@@ -27,7 +27,7 @@ gulp.task('css', () => {
 });
 
 gulp.task('js', function() {
-  gulp.src(['./js/src/life.js', './js/src/main.js'])
+  gulp.src(['./src/js/life.js', './src/js/main.js'])
     .pipe(babel({
       presets: ['es2015']
     }))
@@ -46,6 +46,6 @@ gulp.task('serve', ['build'], () => {
 });
 
 gulp.task('default', ['serve'], () => {
-  gulp.watch('./scss/**/*', ['css']);
-  gulp.watch('./js/src/**/*', ['js']);
+  gulp.watch('./src/scss/**/*', ['css']);
+  gulp.watch('./src/js/**/*', ['js']);
 });
