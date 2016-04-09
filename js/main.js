@@ -10,7 +10,7 @@ var settings = {
     color: 0xff66ff,
     opacity: 0.3
   },
-  zoom: 400,
+  zoom: 500,
   refreshRate: 100,
 
   liveRangeLow: 2,
@@ -45,8 +45,9 @@ function main() {
   };
 
   var DOM = {
+    body: select('body'),
     main: select('.main'),
-    header: select('.main-header'),
+    header: select('.main-header h1'),
     controls: select('.controls'),
     controlsToggle: select('.controls-toggle'),
     ctrlCellCount: select('#ctrl-cell-count'),
@@ -57,15 +58,16 @@ function main() {
     ctrlLiveRangeLow: select('#ctrl-live-range-low'),
     ctrlLiveRangeHigh: select('#ctrl-live-range-high'),
     ctrlBirthNum: select('#ctrl-birth-num'),
-    ctrlGo: select('#ctrl-go')
+    ctrlGo: select('#ctrl-go'),
+    ctrlReset: select('#ctrl-reset')
   };
 
   var measure = {
     height: function height() {
-      return DOM.main.clientHeight - DOM.header.clientHeight;
+      return DOM.main.clientHeight;
     },
     width: function width() {
-      return DOM.main.clientWidth;
+      return DOM.main.clientWidth + DOM.header.clientHeight;
     }
   };
 
@@ -112,6 +114,7 @@ function main() {
       DOM.ctrlLiveRangeHigh.addEventListener('input', updateRules);
       DOM.ctrlBirthNum.addEventListener('input', updateRules);
       DOM.ctrlGo.addEventListener('click', go);
+      DOM.ctrlReset.addEventListener('click', reset);
     }
   };
 
@@ -147,7 +150,7 @@ function main() {
     setup.listeners();
 
     life = $_life(settings.liveRangeLow, settings.liveRangeHigh, settings.birthNum);
-    life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
+    life.seed(settings.worldSize, settings.worldSize, 1);
     constructWorld(settings.cubeSize, settings.cubeSpacing);
   }
 
@@ -171,7 +174,6 @@ function main() {
   // EVENT HANDLERS ================================================
 
   function updateCamera() {
-    _camera.position.z = settings.zoom;
     _camera.aspect = getAspect();
     _camera.updateProjectionMatrix();
     _renderer.setSize(measure.width(), measure.height());
@@ -256,6 +258,8 @@ function main() {
 
     if (liveCells) {
       setTimeout(go, settings.refreshRate);
+    } else {
+      reset();
     }
   }
 
@@ -269,7 +273,7 @@ function main() {
 
     var box = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
 
-    var maxPosCoords = settings.worldSize / 2 - settings.cubeSpacing,
+    var maxPosCoords = settings.worldSize / 2,
         upper = maxPosCoords * cubeSize + maxPosCoords * cubeSpacing - settings.cubeSpacing,
         lower = -upper,
         i,
@@ -302,6 +306,12 @@ function main() {
     });
 
     render();
+  }
+
+  function reset() {
+    console.log(scene);
+    scene.children = [];
+    constructWorld();
   }
 }
 
