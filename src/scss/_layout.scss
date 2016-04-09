@@ -1,0 +1,21 @@
+.main {
+  position: relative;
+  min-height: 100vh;
+}
+
+.main-header h1 {
+  position: absolute;
+  width: 100vh;
+  height: 50px;
+  left: 0;
+  padding: 15px 0 18px;
+  background: rgba(rebeccapurple, 0.5);
+  transform-origin: top left;
+  transform: rotateZ(-90deg) translateX(-100%);
+  font-size: 6vh;
+  font-weight: 800;
+  letter-spacing: -.05em;
+  line-height: 50px;
+  text-align: center;
+  text-transform: uppercase;
+}

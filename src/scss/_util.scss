@@ -1,0 +1,14 @@
+@mixin slider-thumb($color) {
+  width: 16px;
+  height: 16px;
+  background: $color;
+  border: 1px solid black;
+  border-radius: 50%;
+  cursor: grab;
+}
+
+@mixin slider-vendors($color) {
+  &::-webkit-slider-thumb { @include slider-thumb($color); }
+  &::-moz-range-thumb { @include slider-thumb($color); }
+  &::-ms-thumb { @include slider-thumb($color); }
+}
