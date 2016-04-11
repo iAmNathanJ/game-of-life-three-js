@@ -169,6 +169,11 @@ function main() {
 
     life = $_life(settings.liveRangeLow, settings.liveRangeHigh, settings.birthNum);
     life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
+
+    life.setLiveRangeLow(settings.liveRangeLow);
+    life.setLiveRangeHigh(settings.liveRangeHigh);
+    life.setBirthNum(settings.birthNum);
+
     constructWorld(settings.cubeSize, settings.cubeSpacing);
     render();
   }
@@ -231,7 +236,7 @@ function main() {
 
   function updateWorldSize(event) {
     settings.worldSize = event.target.valueAsNumber;
-    DOM.cellCountValue.innerHTML = POW(settings.worldSize, 3);
+    DOM.cellCountValue.innerHTML = `${settings.worldSize}^3 = ${POW(settings.worldSize, 3)}`;
   }
 
   function updateCubeSize(event) {
@@ -327,12 +332,15 @@ function main() {
   }
 
   function clearScene() {
-    for (let i = scene.children.length-1; i >= 0 ; i--) {
-      let child = scene.children[i];
-      if(child instanceof THREE.Mesh) {
-        scene.remove(scene.children[i]);
-      }
-    }
+    // for (let i = scene.children.length-1; i >= 0 ; i--) {
+    //   let child = scene.children[i];
+    //   if(child instanceof THREE.Mesh) {
+    //     scene.remove(scene.children[i]);
+    //   }
+    // }
+
+    scene.children = [];
+    cells = [];
   }
 
   function pause() {
@@ -347,6 +355,7 @@ function main() {
   function reset() {
     pause();
     clearScene();
+    setup.lighting();
     constructWorld(settings.cubeSize, settings.cubeSpacing);
     life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
     render();
