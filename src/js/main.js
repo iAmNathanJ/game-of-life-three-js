@@ -3,7 +3,7 @@ const settings = {
   worldSize: 16,
   cubeSize: 9,
   cubeColor: 0x2194ce,
-  cubeSpacing: 1,
+  cubeSpacing: 0,
   outerCube: {
     color: 0xff66ff,
     opacity: 0.3
@@ -28,6 +28,7 @@ function main() {
   const MAX   = Math.max;
   const FLOOR = Math.floor;
   const CEIL  = Math.ceil;
+  const POW   = Math.pow;
   const RAND  = Math.rand;
 
   const select = (e) => document.querySelector(e);
@@ -36,17 +37,31 @@ function main() {
     body: select('body'),
     main: select('.main'),
     header: select('.main-header h1'),
+    canvas: select('.main-canvas'),
     controls: select('.controls'),
     controlsToggle: select('.controls-toggle'),
+
     ctrlCellCount: select('#ctrl-cell-count'),
+    cellCountValue: select('.control-group.cell-count .slider-value'),
+
     ctrlCellSize: select('#ctrl-cell-size'),
+    cellSizeValue: select('.control-group.cell-size .slider-value'),
+
     ctrlCellSpacing: select('#ctrl-cell-spacing'),
+    cellSpacingValue: select('.control-group.cell-spacing .slider-value'),
+
     ctrlZoom: select('#ctrl-zoom'),
+    zoomValue: select('.control-group.zoom .slider-value'),
+
     ctrlSpeed: select('#ctrl-speed'),
+    speedValue: select('.control-group.speed .slider-value'),
+
     ctrlLiveRangeLow: select('#ctrl-live-range-low'),
     ctrlLiveRangeHigh: select('#ctrl-live-range-high'),
     ctrlBirthNum: select('#ctrl-birth-num'),
-    ctrlGo: select('#ctrl-go'),
+
+    ctrlPlay: select('#ctrl-play'),
+    ctrlPause: select('#ctrl-pause'),
     ctrlReset: select('#ctrl-reset')
   };
 
@@ -61,11 +76,13 @@ function main() {
       camera.position.z = settings.zoom;
     },
     renderer() {
-      renderer = new THREE.WebGLRenderer();
+      renderer = new THREE.WebGLRenderer({ canvas: DOM.canvas });
       renderer.setSize(measure.width(), measure.height());
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setClearColor(settings.bgColor);
-      DOM.main.appendChild(renderer.domElement);
+      // if canvas option is not specified in WebGLRenderer creation,
+      // the below line is required...
+      // DOM.main.appendChild(DOM.canvas);
     },
     lighting() {
       lights = [
@@ -88,21 +105,26 @@ function main() {
       DOM.ctrlCellSpacing.value = settings.cubeSpacing;
       DOM.ctrlZoom.value = -settings.zoom;
       DOM.ctrlSpeed.value = settings.refreshRate;
-
     },
     listeners() {
       window.addEventListener('resize', debounce(updateCamera, 150));
-      window.addEventListener('mousemove', throttle(rotateScene, 50));
+      DOM.canvas.addEventListener('mousedown', () => {
+        DOM.canvas.addEventListener('mousemove', rotateScene);
+      });
+      DOM.canvas.addEventListener('mouseup', () => {
+        DOM.canvas.removeEventListener('mousemove', rotateScene);
+      });
       DOM.controlsToggle.addEventListener('click', toggleControls);
       DOM.ctrlCellCount.addEventListener('input', updateWorldSize);
       DOM.ctrlCellSize.addEventListener('input', updateCubeSize);
       DOM.ctrlCellSpacing.addEventListener('input', updateCubeSpacing);
       DOM.ctrlZoom.addEventListener('input', updateZoom);
-      DOM.ctrlSpeed.addEventListener('input', updateRefreshRate);
+      DOM.ctrlSpeed.addEventListener('input', updateSpeed);
       DOM.ctrlLiveRangeLow.addEventListener('input', updateRules);
       DOM.ctrlLiveRangeHigh.addEventListener('input', updateRules);
       DOM.ctrlBirthNum.addEventListener('input', updateRules);
-      DOM.ctrlGo.addEventListener('click', go);
+      DOM.ctrlPlay.addEventListener('click', play);
+      DOM.ctrlPause.addEventListener('click', pause);
       DOM.ctrlReset.addEventListener('click', reset);
     }
   };
@@ -123,7 +145,14 @@ function main() {
       transparent: true,
       opacity: settings.outerCube.opacity,
       wireframe: true
-    })
+    }),
+    lambert() {
+      return new THREE.MeshLambertMaterial({
+        color: settings.cubeColor,
+        transparent: true,
+        opacity: 0.8
+      });
+    }
   };
 
   // INITIALIZE ================================================
@@ -139,13 +168,13 @@ function main() {
     setup.listeners();
 
     life = $_life(settings.liveRangeLow, settings.liveRangeHigh, settings.birthNum);
-    life.seed(settings.worldSize, settings.worldSize, 1);
+    life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
     constructWorld(settings.cubeSize, settings.cubeSpacing);
+    // renderLoop();
+    render();
   }
 
   init();
-
-  // RENDER HELPERS ================================================
 
   function getAspect() {
     return measure.width() / measure.height();
@@ -153,11 +182,11 @@ function main() {
 
   function render() {
     renderer.render(scene, camera);
-  };
+  }
 
-  function play() {
-    render();
-    requestAnimationFrame(play);
+  function renderLoop() {
+    renderer.render(scene, camera);
+    requestAnimationFrame(renderLoop);
   }
 
   // EVENT HANDLERS ================================================
@@ -203,24 +232,29 @@ function main() {
 
   function updateWorldSize(event) {
     settings.worldSize = event.target.valueAsNumber;
+    DOM.cellCountValue.innerHTML = POW(settings.worldSize, 3);
   }
 
   function updateCubeSize(event) {
     settings.cubeSize = event.target.valueAsNumber;
+    DOM.cellSizeValue.innerHTML = event.target.valueAsNumber;
   }
 
   function updateCubeSpacing(event) {
     settings.cubeSpacing = event.target.valueAsNumber;
+    DOM.cellSpacingValue.innerHTML = event.target.valueAsNumber;
   }
 
   function updateZoom(event) {
-    let update = -event.target.valueAsNumber
-    settings.zoom = update;
-    updateCamera();
+    settings.zoom = -event.target.valueAsNumber;
+    DOM.zoomValue.innerHTML = event.target.valueAsNumber;
+    camera.position.z = settings.zoom;
+    render();
   }
 
-  function updateRefreshRate(event) {
+  function updateSpeed(event) {
     settings.refreshRate = -event.target.valueAsNumber;
+    DOM.speedValue.innerHTML = event.target.valueAsNumber;
   }
 
   // GO ================================================
@@ -233,10 +267,10 @@ function main() {
       for(var j = 0; j < length; j++) {
         for(var k = 0; k < length; k++) {
           if(life.state[i][j][k]) {
-            cells[i][j][k].material = material.solid;
+            cells[i][j][k].visible = true;
             liveCells += 1;
           } else {
-            cells[i][j][k].material = material.transparent;
+            cells[i][j][k].visible = false;
           }
         }
       }
@@ -245,9 +279,11 @@ function main() {
     life.generate();
     render();
 
-    if(liveCells) {
+    if(liveCells && running) {
       setTimeout(go, settings.refreshRate);
-    } else {
+    }
+
+    if(!liveCells) {
       reset();
     }
 
@@ -255,9 +291,9 @@ function main() {
 
   function constructWorld(cubeSize, cubeSpacing) {
 
-    let outerCubeSize = (settings.worldSize * cubeSize) + (settings.worldSize * cubeSpacing);
-    let outerBox = new THREE.BoxGeometry(outerCubeSize, outerCubeSize, outerCubeSize);
-    let outerBoxMaterial = material.wireframe;
+    // let outerCubeSize = (settings.worldSize * cubeSize) + (settings.worldSize * cubeSpacing);
+    let outerBox = new THREE.BoxGeometry(1, 1, 1);
+    let outerBoxMaterial = material.transparent;
     outerCube = new THREE.Mesh(outerBox, outerBoxMaterial);
     scene.add(outerCube);
 
@@ -266,14 +302,15 @@ function main() {
     var maxPosCoords = settings.worldSize / 2,
         upper = (maxPosCoords * cubeSize) + (maxPosCoords * cubeSpacing) - cubeSpacing,
         lower = -upper,
-        i, j, k, x, y, z;
+        i, j, k, x, y, z, offsetHue;
 
     for(i = 0, x = lower; x < upper; i++, x += (cubeSize + cubeSpacing)) {
       cells[i] = [];
       for(j = 0, y = lower; y < upper; j++, y += (cubeSize + cubeSpacing)) {
         cells[i][j] = [];
         for(k = 0, z = lower; z < upper; k++, z += (cubeSize + cubeSpacing)) {
-          cube = new THREE.Mesh(box, material.solid);
+          cube = new THREE.Mesh(box, material.lambert());
+          cube.material.color.offsetHSL((.005 * (j)), 0, 0);
           cube.position.x = x;
           cube.position.y = y;
           cube.position.z = z;
@@ -281,7 +318,6 @@ function main() {
         }
       }
     }
-
     cells.forEach(rows => {
       rows.forEach(cols => {
         cols.forEach(cell => {
@@ -289,8 +325,6 @@ function main() {
         });
       });
     });
-
-    render();
   }
 
   function clearScene() {
@@ -302,9 +336,21 @@ function main() {
     }
   }
 
+  function pause() {
+    running = false;
+  }
+
+  function play() {
+    running = true;
+    go();
+  }
+
   function reset() {
+    pause();
     clearScene();
     constructWorld(settings.cubeSize, settings.cubeSpacing);
+    life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
+    render();
   }
 }
 

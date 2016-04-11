@@ -1,14 +1,35 @@
-@mixin slider-thumb($color) {
+@mixin slider-thumb($color, $border-color) {
   width: 16px;
   height: 16px;
   background: $color;
-  border: 1px solid black;
+  border: 1px solid $border-color;
   border-radius: 50%;
   cursor: grab;
 }
 
-@mixin slider-vendors($color) {
-  &::-webkit-slider-thumb { @include slider-thumb($color); }
-  &::-moz-range-thumb { @include slider-thumb($color); }
-  &::-ms-thumb { @include slider-thumb($color); }
+@mixin slider-thumb-vendors($color, $border-color: black) {
+  &::-webkit-slider-thumb { @include slider-thumb($color, $border-color); }
+  &::-moz-range-thumb { @include slider-thumb($color, $border-color); }
+  &::-ms-thumb { @include slider-thumb($color, $border-color); }
+}
+
+@mixin style-slider($track-color: white, $track-border-color: black, $thumb-color: #555, $thumb-border-color: black) {
+  appearance: none;
+  outline: none;
+  width: 250px;
+  height: 4px;
+  background: $track-color;
+  border: 1px solid $track-border-color;
+
+  &::-ms-track {
+    width: 100%;
+    cursor: grab;
+    background: $track-color;
+    border: 1px solid $track-border-color;
+    color: transparent;
+  }
+
+  &::-webkit-slider-thumb { appearance: none; }
+
+  @include slider-thumb-vendors($thumb-color, $thumb-border-color);
 }

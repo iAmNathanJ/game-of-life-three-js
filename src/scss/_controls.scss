@@ -1,4 +1,7 @@
-$track-background: white;
+$track-background: rgba(#000, 0.8);
+$track-border: rebeccapurple;
+$track-button: rgba(#fff, 0.9);
+$track-button-border: #000;
 
 .controls {
   box-sizing: border-box;
@@ -16,10 +19,7 @@ $track-background: white;
     position: absolute;
     box-sizing: border-box;
     top: 0; right: 0;
-    padding: 20px 20px;
-    background: transparent;
-    border: 0;
-    outline: 0;
+    padding: 30px 20px;
     font-size: 1em;
     color: white;
     cursor: pointer;
@@ -29,11 +29,18 @@ $track-background: white;
   }
 
   .x {
+    position: absolute;
+    top: 0; left: 0;
+
+
     &::before,
     &::after {
-      
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 50px; height: 5px;
+      background: #222;
     }
-
   }
 
   &.open {
@@ -43,50 +50,34 @@ $track-background: white;
 
 }
 
-.slider {
-  appearance: none;
-  outline: none;
-  width: 250px;
-
-  height: 4px;
-  background: $track-background;
-
-  &::-ms-track {
-    width: 100%;
+.control-group {
+  position: relative;
+  
+  button {
+    background: rgba(#000, 0.1);
+    border: 2px solid $track-border;
+    color: $track-button;
+    text-transform: uppercase;
     cursor: pointer;
-    background: $track-background;
-    border-color: transparent;
-    color: transparent;
+    transition: background .2s ease-out;
+
+    &:hover, &:focus {
+      background: rebeccapurple;
+    }
   }
-
-  &::-webkit-slider-thumb { appearance: none; }
-
-  @include slider-vendors(rebeccapurple);
-
-  // &.white { @include slider-vendors(rebeccapurple); }
-  // &.red { @include slider-vendors(rebeccapurple); }
-  // &.green { @include slider-vendors(rebeccapurple); }
-  // &.orange { @include slider-vendors(rebeccapurple); }
 }
 
-fieldset {
-  display: block;
-  margin-bottom: 20px;
-  border: 0;
+.slider {
+  @include style-slider(
+    $track-background,
+    $track-border,
+    $track-button,
+    $track-button-border
+  );
 }
 
-input[type="range"] {
-
-}
-
-input[type="number"] {
-  padding: 2px;
-}
-
-button {
-  padding: 10px;
-}
-
-label {
-  display: block;
+.slider-value {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
