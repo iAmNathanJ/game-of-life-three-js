@@ -9,7 +9,7 @@ const settings = {
     opacity: 0.3
   },
   zoom: 500,
-  refreshRate: 100,
+  generationRate: 100,
 
   liveRangeLow: 2,
   liveRangeHigh: 3,
@@ -53,8 +53,8 @@ function main() {
     ctrlZoom: select('#ctrl-zoom'),
     zoomValue: select('.control-group.zoom .slider-value'),
 
-    ctrlSpeed: select('#ctrl-speed'),
-    speedValue: select('.control-group.speed .slider-value'),
+    ctrlGenerationRate: select('#ctrl-generation-rate'),
+    generationRateValue: select('.control-group.generation-rate .slider-value'),
 
     ctrlLiveRangeLow: select('#ctrl-live-range-low'),
     ctrlLiveRangeHigh: select('#ctrl-live-range-high'),
@@ -104,7 +104,7 @@ function main() {
       DOM.ctrlCellSize.value = settings.cubeSize;
       DOM.ctrlCellSpacing.value = settings.cubeSpacing;
       DOM.ctrlZoom.value = -settings.zoom;
-      DOM.ctrlSpeed.value = settings.refreshRate;
+      DOM.ctrlGenerationRate.value = settings.generationRate;
     },
     listeners() {
       window.addEventListener('resize', debounce(updateCamera, 150));
@@ -119,7 +119,7 @@ function main() {
       DOM.ctrlCellSize.addEventListener('input', updateCubeSize);
       DOM.ctrlCellSpacing.addEventListener('input', updateCubeSpacing);
       DOM.ctrlZoom.addEventListener('input', updateZoom);
-      DOM.ctrlSpeed.addEventListener('input', updateSpeed);
+      DOM.ctrlGenerationRate.addEventListener('input', updateGenerationRate);
       DOM.ctrlLiveRangeLow.addEventListener('input', updateRules);
       DOM.ctrlLiveRangeHigh.addEventListener('input', updateRules);
       DOM.ctrlBirthNum.addEventListener('input', updateRules);
@@ -170,7 +170,6 @@ function main() {
     life = $_life(settings.liveRangeLow, settings.liveRangeHigh, settings.birthNum);
     life.seed(settings.worldSize, settings.worldSize, settings.worldSize);
     constructWorld(settings.cubeSize, settings.cubeSpacing);
-    // renderLoop();
     render();
   }
 
@@ -252,9 +251,9 @@ function main() {
     render();
   }
 
-  function updateSpeed(event) {
-    settings.refreshRate = -event.target.valueAsNumber;
-    DOM.speedValue.innerHTML = event.target.valueAsNumber;
+  function updateGenerationRate(event) {
+    settings.generationRate = event.target.valueAsNumber;
+    DOM.generationRateValue.innerHTML = `${settings.generationRate/1000} seconds`;
   }
 
   // GO ================================================
@@ -280,7 +279,7 @@ function main() {
     render();
 
     if(liveCells && running) {
-      setTimeout(go, settings.refreshRate);
+      setTimeout(go, settings.generationRate);
     }
 
     if(!liveCells) {
