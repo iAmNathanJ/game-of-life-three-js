@@ -8,32 +8,47 @@
   </head>
   <body>
     <main class="main">
+
       <header class="main-header">
         <h1 class="text-xl">Conway's Game of Life</h1>
       </header>
+
       <div class="controls">
+
         <button class="controls-toggle">menu</button>
-        <fieldset>
+        <button class="x"></button>
+
+        <fieldset class="control-group cell-count">
           <label for="cell-count">Cell Count</label>
+          <div class="slider-value"></div>
           <input class="slider" name="cell-count" id="ctrl-cell-count" type="range" min="5" max="25">
         </fieldset>
-        <fieldset>
+
+        <fieldset class="control-group cell-size">
           <label for="cell-size">Cell Size</label>
-          <input class="slider" name="cell-size" id="ctrl-cell-size" type="range" min="1" max="5">
+          <div class="slider-value"></div>
+          <input class="slider" name="cell-size" id="ctrl-cell-size" type="range" min="0.5" max="5" step="0.5">
         </fieldset>
-        <fieldset>
+
+        <fieldset class="control-group cell-spacing">
           <label for="cell-spacing">Cell Spacing</label>
+          <div class="slider-value"></div>
           <input class="slider" name="cell-spacing" id="ctrl-cell-spacing" type="range" min="0" max="10">
         </fieldset>
-        <fieldset>
+
+        <fieldset class="control-group zoom">
           <label for="zoom">Zoom</label>
-          <input class="slider" name="zoom" id="ctrl-zoom" type="range" min="-500" max="0">
+          <div class="slider-value"></div>
+          <input class="slider" name="zoom" id="ctrl-zoom" type="range" min="-1000" max="0">
         </fieldset>
-        <fieldset>
+
+        <fieldset class="control-group speed">
           <label for="speed">Speed</label>
+          <div class="slider-value"></div>
           <input class="slider" name="speed" id="ctrl-speed" type="range" min="-2000" max="-20">
         </fieldset>
-        <fieldset>
+
+        <fieldset class="control-group rules">
           <label for="live-range-low">Live Range Low</label>
           <input name="live-range-low" id="ctrl-live-range-low" type="number" min="1" max="26" value="2">
           <label for="live-range-high">Live Range High</label>
@@ -41,11 +56,17 @@
           <label for="birth-num">Birth Num</label>
           <input name="birth-num" id="ctrl-birth-num" type="number" min="1" max="26" value="3">
         </fieldset>
-        <fieldset>
-          <button id="ctrl-go">GO</button>
-          <button id="ctrl-reset">RESET</button>
+
+        <fieldset class="control-group start-stop">
+          <button id="ctrl-play">Play</button>
+          <button id="ctrl-pause">Pause</button>
+          <button id="ctrl-reset">Reset</button>
         </fieldset>
+
       </div>
+
+      <canvas class="main-canvas"></canvas>
+
     </main>
     <script src="js/three.js"></script>
     <script src="js/life.js"></script>
