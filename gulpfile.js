@@ -27,7 +27,11 @@ gulp.task('css', () => {
 });
 
 gulp.task('js', function() {
-  gulp.src(['./src/js/life.js', './src/js/main.js'])
+  gulp.src([
+    './src/js/pub-sub.js',
+    './src/js/main.js',
+    './src/js/life.js'
+  ])
     .pipe(babel({
       presets: ['es2015']
     }))
